@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+  <arg name="interpreter_name"
+       default="pointcloud2_interpreter"
+       doc="Sets the name of this interpreter instance"
+       />
+  
+  <arg name="interpreter_extra_args"
+       default=""
+       doc="Additional args for the pointcloud2 interpreter"
+       />
+
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_pointcloud2_interpreter_node"
+        name="$(arg interpreter_name)"
+        args="--print_all_options
+              --publish_ema
+              --ema_alpha 0.95
+              --nr_scans_in_bank 4
+              --nr_points_per_scan_in_bank 360
+              --voxel_leaf_size 0.02
+              --threshold_z_min 0.0
+              --threshold_z_max 1.0
+              --object_threshold_min_speed 0.02
+              --object_threshold_max_distance 6.5
+              --object_threshold_min_nr_points 3
+              --object_threshold_min_confidence 0.3
+              --object_threshold_edge_max_delta_range 0.15
+              --object_threshold_max_delta_width_in_points 10
+              $(arg interpreter_extra_args)"
+        output="screen"
+        />
+</launch>
+
+
+<!--message_r_offset 16
+message_g_offset 17
+message_b_offset 18
+message_rgb_bytes 1-->

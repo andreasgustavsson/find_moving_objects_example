@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+  <arg name="interpreter_name"
+       default="laserscan_interpreter"
+       doc="Sets the name of this interpreter instance"
+       />
+  
+  <arg name="interpreter_extra_args"
+       default=""
+       doc="Additional args for the laserscan interpreter"
+       />
+
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_laserscan_interpreter_node"
+        name="$(arg interpreter_name)"
+        args="--print_all_options
+              --publish_ema
+              --nr_scans_in_bank 15
+              --object_threshold_min_speed 0.1
+              --object_threshold_max_distance 6.5
+              --object_threshold_min_nr_points 5
+              --object_threshold_min_confidence 0.6
+              --object_threshold_edge_max_delta_range 0.15
+              $(arg interpreter_extra_args)"
+        output="screen"
+        />
+
+</launch>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+<!-- roscore is automatically started if roslaunch detects that it is not already running -->
+  
+<!--   <param name="use_sim_time" value="true"/>  -->
+
+  <arg name="interpreter_extra_args"
+       default=""
+       doc="Additional args for the pointcloud2 interpreter"
+       />
+  
+  <arg name="frame_broadcaster_extra_args"
+       default=""
+       doc="Additional args for the frame broadcaster"
+       />
+  
+  <arg name="rosbag_extra_args"
+       default=""
+       doc="Additional args for rosbag play"
+       />
+
+  <arg name="bag_path"
+       default="/home/andreas/logs"
+       doc="Base path to log/bag files"
+       />
+  
+  <arg name="bag" 
+       doc="bag file to play"
+       />
+
+  <node pkg="rviz" 
+        type="rviz" 
+        name="rviz" 
+        args="--display-config /home/andreas/.rviz/unicorn_pointcloud2.rviz"
+        />   
+  
+  <node pkg="rosbag"
+        type="play"
+        name="rosbag_play"
+        args="--wait-for-subscribers 
+              --topics /cloud_filtered
+              $(arg rosbag_extra_args)
+              --bags $(arg bag_path)/$(arg bag)"
+          />
+    
+
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_pointcloud2_interpreter_node"
+        name="pointcloud2_interpreter"
+        args="--print_all_options
+              --publish_ema
+              --ema_alpha 0.95
+              --publish_objects_closest_point_markers
+              --publish_objects_velocity_arrows
+              --nr_scans_in_bank 2
+              --nr_points_per_scan_in_bank 360
+              --voxel_leaf_size 0.02
+              --threshold_z_min 0.0
+              --threshold_z_max 1.0
+              --object_threshold_min_speed 0.1
+              --object_threshold_max_distance 6.5
+              --object_threshold_min_nr_points 5
+              --object_threshold_min_confidence 0.3
+              --object_threshold_edge_max_delta_range 0.15
+              --object_threshold_max_delta_width_in_points 10
+              $(arg interpreter_extra_args)"
+        output="screen"
+        />
+<!--   launch-prefix="valgrind - -tool=massif " -->
+  
+
+  <node pkg="unicorn_sensor_interpreter"
+        type="moa_receiver_node"
+        name="moa_receiver"
+        />
+  
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_frame_broadcaster_node"
+        name="frame_broadcaster" 
+        args="$(arg frame_broadcaster_extra_args)"
+        output="screen"
+        />
+
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_pointcloud2_echoer_node"
+        name="unicorn_pointcloud2_echoer"
+        />
+</launch>

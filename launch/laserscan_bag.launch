@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+<!-- roscore is automatically started if roslaunch detects that it is not already running -->
+  
+<!--   <param name="use_sim_time" value="true"/>  -->
+
+  <arg name="interpreter_extra_args"
+       default=""
+       doc="Additional args for the laserscan interpreter"
+       />
+  
+  <arg name="frame_broadcaster_extra_args"
+       default=""
+       doc="Additional args for the frame broadcaster"
+       />
+  
+  <arg name="rosbag_extra_args"
+       default=""
+       doc="Additional args for rosbag play"
+       />
+  
+  <arg name="bag_path"
+       default="/home/andreas/logs"
+       doc="Base path to log/bag files"
+       />
+  
+  <arg name="rviz_config"
+       default="/home/andreas/.rviz/unicorn_laserscan.rviz"
+       doc="RViz config file"
+       />
+  
+  <arg name="bag" 
+       doc="bag file to play"
+       />
+
+  <node pkg="rviz" 
+        type="rviz" 
+        name="rviz" 
+        args="--display-config $(arg rviz_config)"
+        required="true"
+        /> 
+  
+  <!-- Use required="true" to terminate all nodes after playing bagfile (because this node then dies) -->
+  <node pkg="rosbag"
+        type="play"
+        name="rosbag_play"
+        args="--wait-for-subscribers
+              --topics /scan_filtered
+              $(arg rosbag_extra_args)
+              --bags $(arg bag_path)/$(arg bag)"
+        />
+    
+
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_laserscan_interpreter_node"
+        name="laserscan_interpreter"
+        args="--print_all_options
+              --publish_ema
+              --publish_objects_closest_point_markers
+              --publish_objects_velocity_arrows
+              $(arg interpreter_extra_args)"
+        output="screen"
+        />
+  <!-- launch-prefix="valgrind - -tool=massif "   ; massif-visualizer -->
+  <!-- launch-prefix="valgrind - -tool=callgrind "   ; kcachegrind -->
+  <!-- egentligen dubbla - for tool, men da klagar roslaunch på XML-syntaxen... -->
+  <!-- avg CPU usage over time:   while true ; do  ps -p $(ps  aux | grep unicorn_laserscan_interpreter | grep -v grep | awk '{print $2}') -o %cpu h ; sleep 1 ; done  -->
+
+  <node pkg="unicorn_sensor_interpreter"
+        type="moa_receiver_node"
+        name="moa_receiver"
+        />
+  
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_frame_broadcaster_node"
+        name="frame_broadcaster" 
+        args="$(arg frame_broadcaster_extra_args)"
+        output="screen"
+        />
+
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_laserscan_echoer_node"
+        name="unicorn_laserscan_echoer"
+        />
+</launch>
+
+<!-- required="true" -->

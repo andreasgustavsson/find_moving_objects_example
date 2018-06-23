@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+<!-- roscore is automatically started if roslaunch detects that it is not already running -->
+  
+<!--   <param name="use_sim_time" value="true"/>  -->
+
+  
+  <!-- Arguments -->
+  <arg name="confidence_enhancer_extra_args"
+       default=""
+       doc="Additional args for the sensor fusion unit"
+       />
+  
+  <arg name="pointcloud2_interpreter_extra_args"
+       default=""
+       doc="Additional args for the pointcloud2 interpreter"
+       />
+  
+  <arg name="laserscan_interpreter_extra_args"
+       default=""
+       doc="Additional args for the laserscan interpreter"
+       />
+  
+  <arg name="frame_broadcaster_extra_args"
+       default=""
+       doc="Additional args for the frame broadcaster"
+       />
+  
+  <arg name="rosbag_extra_args"
+       default=""
+       doc="Additional args for rosbag play"
+       />
+
+  <arg name="bag_path"
+       default="/home/andreas/logs"
+       doc="Base path to log/bag files"
+       />
+  
+  <arg name="bag" 
+       doc="bag file to play"
+       />
+
+<!--   <param name="/use_sim_time" value="true"/> -->
+  
+<!-- Debugger node -->
+  <node pkg="unicorn_sensor_interpreter"
+        type="moa_receiver_node"
+        name="moa_receiver"
+        args="--subscribe_topic /moving_objects_fused"
+        />
+  
+<!-- Rviz -->
+  <node pkg="rviz" 
+        type="rviz" 
+        name="rviz" 
+        args="--display-config /home/andreas/.rviz/unicorn_fuser.rviz"
+        /> 
+  
+<!-- Rosbag play -->
+  <!-- Use required="true" to terminate all nodes after playing bagfile (because this node then dies) -->
+  <node pkg="rosbag"
+        type="play"
+        name="rosbag_play"
+        args="--wait-for-subscribers
+              --topics /cloud_filtered /scan_filtered
+              $(arg rosbag_extra_args)
+              --bags $(arg bag_path)/$(arg bag)"
+        />
+
+<!-- Frames broadcaster -->
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_frame_broadcaster_node"
+        name="frame_broadcaster" 
+        args="--print_all_options
+              $(arg frame_broadcaster_extra_args)"
+        output="screen"
+        />
+
+<!-- Fuser -->
+  <node pkg="find_moving_objects"
+        type="moving_objects_confidence_enhancer_node"
+        name="confidence_enhancer" 
+        args="--print_all_options
+              --publish_objects_velocity_arrows
+              --publish_objects_closest_point_markers
+              --threshold_min_confidence 0.3
+              $(arg confidence_enhancer_extra_args)"
+        output="screen"
+        />
+  
+<!-- PointCloud2 -->
+  <!--   <include file="$(dirname)/pointcloud2_interpreter.launch" /> --> <!-- From Lunar -->
+  <include file="$(find unicorn_sensor_interpreter)/launch/pointcloud2_interpreter.launch">
+    <arg name="interpreter_name"
+         value="pointcloud2_interpreter" />
+    <arg name="interpreter_extra_args"
+         value="$(arg pointcloud2_interpreter_extra_args)" />
+  </include>
+    
+<!--  <include file="$(find unicorn_sensor_interpreter)/launch/pointcloud2_interpreter.launch">
+    <arg name="interpreter_name"
+          value="$(anon pointcloud2_interpreter)" />
+    <arg name="interpreter_extra_args"
+          value="$(arg pointcloud2_interpreter_extra_args)" />
+  </include>
+    
+  <include file="$(find unicorn_sensor_interpreter)/launch/pointcloud2_interpreter.launch">
+    <arg name="interpreter_name"
+          value="$(anon pointcloud2_interpreter)" />
+    <arg name="interpreter_extra_args"
+          value="$(arg pointcloud2_interpreter_extra_args)" />
+  </include>
+    
+  <include file="$(find unicorn_sensor_interpreter)/launch/pointcloud2_interpreter.launch">
+    <arg name="interpreter_name"
+          value="$(anon pointcloud2_interpreter)" />
+    <arg name="interpreter_extra_args"
+          value="$(arg pointcloud2_interpreter_extra_args)" />
+  </include>-->
+  
+  
+<!-- LaserScan -->
+  <!--   <include file="$(dirname)/laserscan_interpreter.launch" /> --> <!-- From Lunar -->
+  <include file="$(find unicorn_sensor_interpreter)/launch/laserscan_interpreter.launch">
+      <arg name="interpreter_extra_args"
+           value="$(arg laserscan_interpreter_extra_args)" />
+  </include>
+  
+  
+
+  
+  
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_laserscan_echoer_node"
+        name="unicorn_laserscan_echoer"
+        />
+  
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_pointcloud2_echoer_node"
+        name="unicorn_pointcloud2_echoer"
+        />
+</launch>

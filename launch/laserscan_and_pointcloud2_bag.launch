@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+<!-- roscore is automatically started if roslaunch detects that it is not already running -->
+  
+<!--   <param name="use_sim_time" value="true"/>  -->
+
+  
+  <!-- Arguments -->
+  <arg name="pointcloud2_interpreter_extra_args"
+       default=""
+       doc="Additional args for the pointcloud2 interpreter"
+       />
+  
+  <arg name="laserscan_interpreter_extra_args"
+       default=""
+       doc="Additional args for the laserscan interpreter"
+       />
+  
+  <arg name="rosbag_extra_args"
+       default=""
+       doc="Additional args for rosbag play"
+       />
+
+  <arg name="bag_path"
+       default="/home/andreas/logs"
+       doc="Base path to log/bag files"
+       />
+  
+  <arg name="bag" 
+       doc="bag file to play"
+       />
+
+  
+<!-- Rviz -->
+  <node pkg="rviz" 
+        type="rviz" 
+        name="rviz" 
+        args="--display-config /home/andreas/.rviz/unicorn_pointcloud2_and_laserscan.rviz"
+        /> 
+
+  
+<!-- Frames broadcaster -->
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_sensor_frame_broadcaster_node"
+        name="frame_broadcaster" 
+        />
+  
+  
+<!-- Debugger node -->
+  <node pkg="unicorn_sensor_interpreter"
+        type="moving_object_array_receiver_node"
+        name="moving_object_array_receiver"
+        />
+  
+  
+<!-- PointCloud2 -->
+  <!--   <include file="$(dirname)/pointcloud2_interpreter.launch" /> --> <!-- From Lunar -->
+  <include file="$(find unicorn_sensor_interpreter)/launch/pointcloud2_interpreter.launch">
+    <arg name="interpreter_extra_args"
+         value="$(arg pointcloud2_interpreter_extra_args)" />
+  </include>
+  
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_pointcloud2_echoer_node"
+        name="unicorn_pointcloud2_echoer"
+        />
+  
+  
+<!-- LaserScan -->
+  <!--   <include file="$(dirname)/laserscan_interpreter.launch" /> --> <!-- From Lunar -->
+  <include file="$(find unicorn_sensor_interpreter)/launch/laserscan_interpreter.launch">
+    <arg name="interpreter_extra_args"
+         value="$(arg laserscan_interpreter_extra_args)" />
+  </include>
+  
+  <node pkg="unicorn_sensor_interpreter"
+        type="unicorn_laserscan_echoer_node"
+        name="unicorn_laserscan_echoer"
+        />  
+  
+
+<!-- Rosbag play -->
+  <!-- Use required="true" to terminate all nodes after playing bagfile (because this node then dies) -->
+  <node pkg="rosbag"
+        type="play"
+        name="rosbag_play"
+        args="$(arg rosbag_extra_args)
+              $(arg bag_path)/$(arg bag)"
+        />
+</launch>
