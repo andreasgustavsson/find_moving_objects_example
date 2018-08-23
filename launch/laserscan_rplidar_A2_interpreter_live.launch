@@ -15,16 +15,25 @@
         type="unicorn_laserscan_interpreter_node"
         name="$(arg interpreter_name)"
         args="--print_all_options
+              --subscribe_topic /scan
               --publish_ema
-              --nr_scans_in_bank 15
-              --mounting_angle_shift_z −0,7852405
-              --object_threshold_min_speed 0.1
+              --publish_objects_closest_point_markers
+              --publish_objects_velocity_arrows
+              --publish_objects_delta_position_lines
+              --nr_scans_in_bank 10
+              --object_threshold_min_speed 0.04
               --object_threshold_max_distance 6.5
-              --object_threshold_min_nr_points 5
-              --object_threshold_min_confidence 0.6
+              --object_threshold_min_nr_points 4
+              --object_threshold_min_confidence 0
               --object_threshold_edge_max_delta_range 0.15
               $(arg interpreter_extra_args)"
         output="screen"
         />
 
+  <include file="$(find rplidar_ros)/launch/view_rplidar.launch">
+<!--            <arg name="enable_pointcloud" value="true"/> -->
+<!--            <arg name="align_depth" value="true"/> -->
+<!--            <arg name="enable_sync" value="true"/> -->
+  </include>
+  
 </launch>

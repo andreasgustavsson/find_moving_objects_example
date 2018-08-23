@@ -100,7 +100,7 @@ Option g_options[] = {
          std::string("base_link")),
   Option(false, "--mounting_angle_shift_z",
          "Can be used for offsetting the mounting angle of the sensor",
-         -(2.34731+(-0.776829))/2, -M_PI, M_PI), // Set value to -(2.34731f+(-0.776829f))/2 if the frames
+         0.0, -M_PI, M_PI), // Set value to -(2.34731f+(-0.776829f))/2 = −0,7852405 if the frames
          // base_laser{,_ema} are not tf:ed;
          // setting this value to a value other than 0.0 causes the incoming message to be doubly copied (NOT GOOD!)...
   Option(false, "--nr_scans_in_bank",

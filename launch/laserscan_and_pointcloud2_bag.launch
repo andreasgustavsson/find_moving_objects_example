@@ -71,7 +71,7 @@
   <!--   <include file="$(dirname)/laserscan_interpreter.launch" /> --> <!-- From Lunar -->
   <include file="$(find unicorn_sensor_interpreter)/launch/laserscan_interpreter.launch">
     <arg name="interpreter_extra_args"
-         value="$(arg laserscan_interpreter_extra_args)" />
+         value="--mounting_angle_shift_z −0,7852405 $(arg laserscan_interpreter_extra_args)" />
   </include>
   
   <node pkg="unicorn_sensor_interpreter"

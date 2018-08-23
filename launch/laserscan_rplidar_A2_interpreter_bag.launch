@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <launch>
 
-<!-- roscore is automatically started if roslaunch detects that it is not already running -->
   
-<!--   <param name="use_sim_time" value="true"/>  -->
-
+  
+<!--   <env name="ROSCONSOLE_CONFIG_FILE" -->
+<!--        value="$(find find_moving_objects)/logger_config/logger_config_debug.config"/> -->
+  
+  
+  
+  <arg name="interpreter_name"
+       default="laserscan_interpreter"
+       doc="Sets the name of this interpreter instance"
+       />
+  
   <arg name="interpreter_extra_args"
        default=""
        doc="Additional args for the laserscan interpreter"
        />
+  
+  
   
   <arg name="frame_broadcaster_extra_args"
        default=""
@@ -21,70 +31,78 @@
        />
   
   <arg name="bag_path"
-       default="/home/andreas/logs"
+       default="/home/andreas/logs_rplidar"
        doc="Base path to log/bag files"
        />
   
-  <arg name="rviz_config"
-       default="/home/andreas/.rviz/unicorn_laserscan.rviz"
-       doc="RViz config file"
-       />
-  
   <arg name="bag" 
+       default="hand_moving_simple_2018-08-01-10-30-44.bag"
        doc="bag file to play"
        />
 
   <node pkg="rviz" 
         type="rviz" 
         name="rviz" 
-        args="--display-config $(arg rviz_config)"
+        args="--display-config /home/andreas/.rviz/rplidar_laserscan_bag.rviz"
         required="true"
-        /> 
-  
-  <!-- Use required="true" to terminate all nodes after playing bagfile (because this node then dies) -->
+        />
+
+    <!-- Use required="true" to terminate all nodes after playing bagfile (because this node then dies) -->
   <node pkg="rosbag"
         type="play"
         name="rosbag_play"
         args="--wait-for-subscribers
-              --topics /scan_filtered
+              --topics /scan
               $(arg rosbag_extra_args)
               --bags $(arg bag_path)/$(arg bag)"
         />
-    
+  
+  
+  
 
   <node pkg="unicorn_sensor_interpreter"
         type="unicorn_laserscan_interpreter_node"
-        name="laserscan_interpreter"
+        name="$(arg interpreter_name)"
         args="--print_all_options
-              --mounting_angle_shift_z −0,7852405
+              --subscribe_topic /scan_echoed
+              --ema_alpha 1.0
               --publish_ema
               --publish_objects_closest_point_markers
               --publish_objects_velocity_arrows
+              --velocity_arrows_use_sensor_frame
               --publish_objects_delta_position_lines
+              --nr_scans_in_bank 7
+              --object_threshold_min_speed 0.1
+              --object_threshold_max_distance 8
+              --object_threshold_min_nr_points 4
+              --object_threshold_min_confidence 0.2
+              --object_threshold_edge_max_delta_range 0.2
+              --object_threshold_max_delta_width_in_points 20
+              --object_threshold_bank_tracking_max_delta_distance 0.4
               $(arg interpreter_extra_args)"
         output="screen"
         />
-  <!-- launch-prefix="valgrind - -tool=massif "   ; massif-visualizer -->
-  <!-- launch-prefix="valgrind - -tool=callgrind "   ; kcachegrind -->
-  <!-- egentligen dubbla - for tool, men da klagar roslaunch på XML-syntaxen... -->
-  <!-- avg CPU usage over time:   while true ; do  ps -p $(ps  aux | grep unicorn_laserscan_interpreter | grep -v grep | awk '{print $2}') -o %cpu h ; sleep 1 ; done  -->
 
   <node pkg="unicorn_sensor_interpreter"
         type="moa_receiver_node"
         name="moa_receiver"
         />
-  
+    
   <node pkg="unicorn_sensor_interpreter"
-        type="unicorn_frame_broadcaster_node"
+        type="rplidar_frame_broadcaster_node"
         name="frame_broadcaster" 
         args="$(arg frame_broadcaster_extra_args)"
-        output="screen"
         />
-
+  
   <node pkg="unicorn_sensor_interpreter"
-        type="unicorn_laserscan_echoer_node"
-        name="unicorn_laserscan_echoer"
+        type="rplidar_echoer_node"
+        name="rplidar_echoer"
         />
+  
+<!--  <node pkg="unicorn_sensor_interpreter"
+        type="rplidar_angle_limits_dumper_node"
+        name="angle_limits_dumper"
+        output="screen"
+        />-->
+  
 </launch>
-
-<!-- required="true" -->

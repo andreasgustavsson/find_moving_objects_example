@@ -205,7 +205,7 @@ int main(int argc, char** argv){
 //                                           "camera_link",
 //                                           "camera_depth_optical_frame"
                                           "base_link",
-                                          "zed_left_camera"));
+                                          "camera_link"));
     // Rotate around Z-axis
 //     transform.setOrigin( tf::Vector3(0.2,0.0,0.0));
 //     transform.setRotation( tf::Quaternion(tf::Vector3(0,0,1), ls_angle_shift) );
@@ -216,14 +216,14 @@ int main(int argc, char** argv){
 //                                           ros::Time::now(),
 //                                           "base_link",
 //                                           "base_laser_ema"));
-    br.sendTransform(tf::StampedTransform(tf::Transform(/*tf::Quaternion(0, -0.707106781, 0, 0.707106781),*/
-//                                                         tf::Quaternion(0, -0.447213595, 0, 0.894427191),
-                                                        tf::Quaternion(0, 0, 0, 1),
-                                                        tf::Vector3(0.2,/*3*sin(15*theta)*/0,0)),
-//                                           now,
-                                          ros::Time::now(),
-                                          "base_link",
-                                          "base_laser"));
+//     br.sendTransform(tf::StampedTransform(tf::Transform(/*tf::Quaternion(0, -0.707106781, 0, 0.707106781),*/
+// //                                                         tf::Quaternion(0, -0.447213595, 0, 0.894427191),
+//                                                         tf::Quaternion(0, 0, 0, 1),
+//                                                         tf::Vector3(0.2,/*3*sin(15*theta)*/0,0)),
+// //                                           now,
+//                                           ros::Time::now(),
+//                                           "base_link",
+//                                           "base_laser"));
 //     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "zed_left_camera"));
     rate.sleep();
   }

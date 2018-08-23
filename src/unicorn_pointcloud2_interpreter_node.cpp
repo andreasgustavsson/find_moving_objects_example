@@ -98,6 +98,9 @@ Option g_options[] = {
   Option(false, "--base_frame",
          "The base frame of the robot",
          std::string("base_link")),
+  Option(false, "--sensor_frame_has_z_axis_forward",
+         "The sensor is using an optical frame (x right, y down and z forward)",
+         false),
   Option(false, "--nr_scans_in_bank",
          "Size of the bank containing subsequent, EMA:ed messages",
          5, 2, 20),
@@ -220,6 +223,7 @@ typedef enum {
   O_I_MAP_FRAME = 0,
   O_I_FIXED_FRAME,
   O_I_BASE_FRAME,
+  O_I_SENSOR_FRAME_HAS_Z_AXIS_FORWARD,
   O_I_NR_MESSAGES_IN_BANK,
   O_I_NR_POINTS_PER_MESSAGE_IN_BANK,
   O_I_BANK_VIEW_ANGLE,
@@ -276,6 +280,7 @@ void pointCloud2CallbackFirst(const sensor_msgs::PointCloud2::ConstPtr & msg)
 {
   // Keep reference to message
   msg_old = msg;
+  std::cout << "Pointcloud2 sensor is using frame: " << msg->header.frame_id;
 
   // Init bank
   if (bank->init(bank_argument, msg) == 0)
@@ -323,6 +328,7 @@ int main (int argc, char ** argv)
   bank_argument.points_per_scan = g_options[O_I_NR_POINTS_PER_MESSAGE_IN_BANK].getLongValue();
   bank_argument.angle_max = g_options[O_I_BANK_VIEW_ANGLE].getDoubleValue() / 2;
   bank_argument.angle_min = -bank_argument.angle_max;
+  bank_argument.sensor_frame_has_z_axis_forward = g_options[O_I_SENSOR_FRAME_HAS_Z_AXIS_FORWARD].getBoolValue();
   bank_argument.object_threshold_edge_max_delta_range =
     g_options[O_I_OBJECT_THRESHOLD_EDGE_MAX_DELTA_RANGE].getDoubleValue();
   bank_argument.object_threshold_min_nr_points = g_options[O_I_OBJECT_THRESHOLD_MIN_NR_POINTS].getLongValue();

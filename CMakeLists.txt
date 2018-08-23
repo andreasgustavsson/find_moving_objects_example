@@ -152,6 +152,11 @@ add_executable(unicorn_pointcloud2_interpreter_node src/unicorn_pointcloud2_inte
 add_executable(unicorn_laserscan_interpreter_node_no_args src/unicorn_laserscan_interpreter_no_args_node.cpp)
 add_executable(unicorn_pointcloud2_interpreter_node_no_args src/unicorn_pointcloud2_interpreter_no_args_node.cpp)
 add_executable(unicorn_frame_broadcaster_node src/unicorn_frame_broadcaster_node.cpp)
+add_executable(d435_frame_broadcaster_node src/d435_frame_broadcaster_node.cpp)
+add_executable(d435_voxel_echoer_node src/d435_voxel_echoer_node.cpp)
+add_executable(rplidar_frame_broadcaster_node src/rplidar_frame_broadcaster_node.cpp)
+add_executable(rplidar_echoer_node src/rplidar_echoer_node.cpp)
+add_executable(rplidar_angle_limits_dumper_node src/rplidar_angle_limits_dumper_node.cpp)
 # add_executable(unicorn_odometry_echoer_node src/unicorn_odometry_echoer_node.cpp)
 add_executable(moa_receiver_node src/moa_receiver_node.cpp)
 add_executable(unicorn_laserscan_echoer_node src/unicorn_laserscan_echoer_node.cpp)
@@ -172,6 +177,8 @@ add_dependencies(unicorn_pointcloud2_interpreter_node   option)
 add_dependencies(moa_receiver_node                      option)
 # add_dependencies(unicorn_confidence_enhancer_node       option)
 add_dependencies(unicorn_frame_broadcaster_node         option)
+add_dependencies(d435_frame_broadcaster_node            option)
+add_dependencies(rplidar_frame_broadcaster_node         option)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(
@@ -221,6 +228,16 @@ unicorn_frame_broadcaster_node
   option
 )
 target_link_libraries(
+d435_frame_broadcaster_node
+  ${catkin_LIBRARIES}
+  option
+)
+target_link_libraries(
+rplidar_frame_broadcaster_node
+  ${catkin_LIBRARIES}
+  option
+)
+target_link_libraries(
 moa_receiver_node
   ${catkin_LIBRARIES}
   option
@@ -235,6 +252,18 @@ unicorn_laserscan_echoer_node
 )
 target_link_libraries(
 unicorn_pointcloud2_echoer_node
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(
+d435_voxel_echoer_node
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(
+rplidar_echoer_node
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(
+rplidar_angle_limits_dumper_node
   ${catkin_LIBRARIES}
 )
 # target_link_libraries(
