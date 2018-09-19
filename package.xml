@@ -47,6 +47,9 @@
   <build_depend>visualization_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>find_moving_objects</build_depend>
+  
+  <build_depend>face_detector</build_depend>
+  <build_depend>people_msgs</build_depend>
 <!--   <build_depend>geometry_msgs</build_depend> -->
 <!--   <build_export_depend>roscpp</build_export_depend> -->
 <!--   <build_export_depend>rospy</build_export_depend> -->
@@ -62,6 +65,8 @@
   <exec_depend>visualization_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>find_moving_objects</exec_depend>
+  <exec_depend>face_detector</exec_depend>
+  <exec_depend>people_msgs</exec_depend>
 <!--   <exec_depend>geometry_msgs</exec_depend> -->
   
 

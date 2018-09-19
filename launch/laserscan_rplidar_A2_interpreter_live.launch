@@ -10,9 +10,23 @@
        default=""
        doc="Additional args for the laserscan interpreter"
        />
-
+  
+  <arg name="frame_broadcaster_extra_args"
+       default=""
+       doc="Additional args for the frame broadcaster"
+       />
+  
+<!-- Frames broadcaster -->
   <node pkg="unicorn_sensor_interpreter"
-        type="unicorn_laserscan_interpreter_node"
+        type="rplidar_frame_broadcaster_node"
+        name="frame_broadcaster" 
+        args="--print_all_options
+              $(arg frame_broadcaster_extra_args)"
+        output="screen"
+        />
+
+  <node pkg="find_moving_objects"
+        type="laserscan_interpreter_node"
         name="$(arg interpreter_name)"
         args="--print_all_options
               --subscribe_topic /scan
@@ -20,20 +34,32 @@
               --publish_objects_closest_point_markers
               --publish_objects_velocity_arrows
               --publish_objects_delta_position_lines
-              --nr_scans_in_bank 10
-              --object_threshold_min_speed 0.04
-              --object_threshold_max_distance 6.5
+              --publish_objects_width_lines
+              --nr_scans_in_bank 7
+              --object_threshold_min_speed 0.1
+              --object_threshold_max_distance 8
               --object_threshold_min_nr_points 4
-              --object_threshold_min_confidence 0
-              --object_threshold_edge_max_delta_range 0.15
+              --object_threshold_min_confidence 0.2
+              --object_threshold_edge_max_delta_range 0.2
+              --object_threshold_max_delta_width_in_points 20
+              --object_threshold_bank_tracking_max_delta_distance 0.4
               $(arg interpreter_extra_args)"
         output="screen"
         />
-
-  <include file="$(find rplidar_ros)/launch/view_rplidar.launch">
+  
+  <node pkg="rviz" 
+        type="rviz" 
+        name="rviz" 
+        args="--display-config /home/andreas/.rviz/rplidar_laserscan_bag.rviz"
+        required="true"
+        />
+  
+  <include file="$(find rplidar_ros)/launch/rplidar.launch">
 <!--            <arg name="enable_pointcloud" value="true"/> -->
 <!--            <arg name="align_depth" value="true"/> -->
 <!--            <arg name="enable_sync" value="true"/> -->
   </include>
+  
+  
   
 </launch>

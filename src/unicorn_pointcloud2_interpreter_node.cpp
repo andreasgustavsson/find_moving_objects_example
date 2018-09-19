@@ -134,6 +134,9 @@ Option g_options[] = {
   Option(false, "--publish_objects_delta_position_lines",
          "Publish delta position line of objects as a MarkerArray message (lines)",
          false),
+  Option(false, "--publish_objects_width_lines",
+         "Publish width line of objects as a MarkerArray message (lines)",
+         false),
   Option(false, "--publish_buffer_size",
          "Publishing queue size",
          1, 1, 1000),
@@ -152,6 +155,9 @@ Option g_options[] = {
   Option(false, "--topic_objects_delta_position_lines",
          "Topic for publishing delta position lines",
          std::string("/laserscan_objects_delta_position_lines")),
+  Option(false, "--topic_objects_width_lines",
+         "Topic for publishing width lines",
+         std::string("/laserscan_objects_width_lines")),
   Option(false, "--velocity_arrows_use_full_gray_scale",
          "Shift color/confidence of arrow to full gray scale (white is high confidence)",
          false),
@@ -164,15 +170,15 @@ Option g_options[] = {
   Option(false, "--velocity_arrows_use_fixed_frame",
          "Show velocity of object in fixed frame instead of map",
          false),
-  Option(false, "--delta_position_lines_use_sensor_frame",
-         "Show delta position line of object in sensor frame instead of map",
-         false),
-  Option(false, "--delta_position_lines_use_base_frame",
-         "Show delta position line of object in base frame instead of map",
-         false),
-  Option(false, "--delta_position_lines_use_fixed_frame",
-         "Show delta position line of object in fixed frame instead of map",
-         false),
+//   Option(false, "--delta_position_lines_use_sensor_frame",
+//          "Show delta position line of object in sensor frame instead of map",
+//          false),
+//   Option(false, "--delta_position_lines_use_base_frame",
+//          "Show delta position line of object in base frame instead of map",
+//          false),
+//   Option(false, "--delta_position_lines_use_fixed_frame",
+//          "Show delta position line of object in fixed frame instead of map",
+//          false),
   Option(false, "--message_x_coordinate_field_name",
          "Name of X coordinate offset field in the point cloud messages",
          std::string("x")),
@@ -235,19 +241,21 @@ typedef enum {
   O_I_PUBLISH_OBJECTS_CLOSEST_POINT_MARKERS,
   O_I_PUBLISH_OBJECTS_VELOCITY_ARROWS,
   O_I_PUBLISH_OBJECTS_DELTA_POSITION_LINES,
+  O_I_PUBLISH_OBJECTS_WIDTH_LINES,
   O_I_PUBLISH_BUFFER_SIZE,
   O_I_TOPIC_OBJECTS,
   O_I_TOPIC_EMA,
   O_I_TOPIC_OBJECTS_CLOSEST_POINT_MARKERS,
   O_I_TOPIC_OBJECTS_VELOCITY_ARROWS,
   O_I_TOPIC_OBJECTS_DELTA_POSITION_LINES,
+  O_I_TOPIC_OBJECTS_WIDTH_LINES,
   O_I_VELOCITY_ARROWS_USE_FULL_GRAY_SCALE,
   O_I_VELOCITY_ARROWS_USE_SENSOR_FRAME,
   O_I_VELOCITY_ARROWS_USE_BASE_FRAME,
   O_I_VELOCITY_ARROWS_USE_FIXED_FRAME,
-  O_I_DELTA_POSITION_LINES_USE_SENSOR_FRAME,
-  O_I_DELTA_POSITION_LINES_USE_BASE_FRAME,
-  O_I_DELTA_POSITION_LINES_USE_FIXED_FRAME,
+//   O_I_DELTA_POSITION_LINES_USE_SENSOR_FRAME,
+//   O_I_DELTA_POSITION_LINES_USE_BASE_FRAME,
+//   O_I_DELTA_POSITION_LINES_USE_FIXED_FRAME,
   O_I_MESSAGE_X_COORDINATE_FIELD_NAME,
   O_I_MESSAGE_Y_COORDINATE_FIELD_NAME,
   O_I_MESSAGE_Z_COORDINATE_FIELD_NAME,
@@ -346,26 +354,30 @@ int main (int argc, char ** argv)
   bank_argument.publish_objects_velocity_arrows = g_options[O_I_PUBLISH_OBJECTS_VELOCITY_ARROWS].getBoolValue();
   bank_argument.publish_objects_delta_position_lines =
     g_options[O_I_PUBLISH_OBJECTS_DELTA_POSITION_LINES].getBoolValue();
+  bank_argument.publish_objects_width_lines =
+    g_options[O_I_PUBLISH_OBJECTS_WIDTH_LINES].getBoolValue();
   bank_argument.velocity_arrows_use_full_gray_scale = g_options[O_I_VELOCITY_ARROWS_USE_FULL_GRAY_SCALE].getBoolValue();
   bank_argument.velocity_arrows_use_sensor_frame = g_options[O_I_VELOCITY_ARROWS_USE_SENSOR_FRAME].getBoolValue();
   bank_argument.velocity_arrows_use_base_frame = g_options[O_I_VELOCITY_ARROWS_USE_BASE_FRAME].getBoolValue();
   bank_argument.velocity_arrows_use_fixed_frame = g_options[O_I_VELOCITY_ARROWS_USE_FIXED_FRAME].getBoolValue();
-  bank_argument.delta_position_lines_use_sensor_frame =
-    g_options[O_I_DELTA_POSITION_LINES_USE_SENSOR_FRAME].getBoolValue();
-  bank_argument.delta_position_lines_use_base_frame = g_options[O_I_DELTA_POSITION_LINES_USE_BASE_FRAME].getBoolValue();
-  bank_argument.delta_position_lines_use_fixed_frame =
-    g_options[O_I_DELTA_POSITION_LINES_USE_FIXED_FRAME].getBoolValue();
+//   bank_argument.delta_position_lines_use_sensor_frame =
+//     g_options[O_I_DELTA_POSITION_LINES_USE_SENSOR_FRAME].getBoolValue();
+//   bank_argument.delta_position_lines_use_base_frame = g_options[O_I_DELTA_POSITION_LINES_USE_BASE_FRAME].getBoolValue();
+//   bank_argument.delta_position_lines_use_fixed_frame =
+//     g_options[O_I_DELTA_POSITION_LINES_USE_FIXED_FRAME].getBoolValue();
   bank_argument.publish_objects = !g_options[O_I_NO_PUBLISH_OBJECTS].getBoolValue();
   bank_argument.map_frame = g_options[O_I_MAP_FRAME].getStringValue();
   bank_argument.fixed_frame = g_options[O_I_FIXED_FRAME].getStringValue();
   bank_argument.base_frame = g_options[O_I_BASE_FRAME].getStringValue();
   bank_argument.velocity_arrow_ns = "pointcloud2_velocity_arrow";
   bank_argument.delta_position_line_ns = "pointcloud2_delta_position_line";
+  bank_argument.width_line_ns = "pointcloud2_width_line";
   bank_argument.topic_ema = g_options[O_I_TOPIC_EMA].getStringValue();
   bank_argument.topic_objects_closest_point_markers =
     g_options[O_I_TOPIC_OBJECTS_CLOSEST_POINT_MARKERS].getStringValue();
   bank_argument.topic_objects_velocity_arrows = g_options[O_I_TOPIC_OBJECTS_VELOCITY_ARROWS].getStringValue();
   bank_argument.topic_objects_delta_position_lines = g_options[O_I_TOPIC_OBJECTS_DELTA_POSITION_LINES].getStringValue();
+  bank_argument.topic_objects_width_lines = g_options[O_I_TOPIC_OBJECTS_WIDTH_LINES].getStringValue();
   bank_argument.topic_objects = g_options[O_I_TOPIC_OBJECTS].getStringValue();
   bank_argument.publish_buffer_size = g_options[O_I_PUBLISH_BUFFER_SIZE].getLongValue();
 

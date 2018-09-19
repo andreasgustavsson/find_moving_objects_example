@@ -57,8 +57,8 @@
            <arg name="enable_sync" value="true"/>
   </include>-->
   
-  <node pkg="unicorn_sensor_interpreter"
-        type="unicorn_pointcloud2_interpreter_node"
+  <node pkg="find_moving_objects"
+        type="pointcloud2_interpreter_node"
         name="pointcloud2_interpreter"
         args="--print_all_options
               --subscribe_topic /camera/depth/color/points/filtered_echoed
@@ -72,6 +72,7 @@
               --publish_objects_closest_point_markers
               --publish_objects_velocity_arrows
               --publish_objects_delta_position_lines
+              --publish_objects_width_lines
               --velocity_arrows_use_sensor_frame
               --delta_position_lines_use_sensor_frame
               --nr_scans_in_bank 9

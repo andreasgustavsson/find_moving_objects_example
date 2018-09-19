@@ -160,9 +160,9 @@ int main (int argc, char ** argv)
   bank_argument.velocity_arrows_use_sensor_frame = false;
   bank_argument.velocity_arrows_use_base_frame = false;
   bank_argument.velocity_arrows_use_fixed_frame = false;
-  bank_argument.delta_position_lines_use_sensor_frame = false;
-  bank_argument.delta_position_lines_use_base_frame = false;
-  bank_argument.delta_position_lines_use_fixed_frame = false;
+//   bank_argument.delta_position_lines_use_sensor_frame = false;
+//   bank_argument.delta_position_lines_use_base_frame = false;
+//   bank_argument.delta_position_lines_use_fixed_frame = false;
   bank_argument.publish_objects = true;
   bank_argument.map_frame = "map";
   bank_argument.fixed_frame = "odom";

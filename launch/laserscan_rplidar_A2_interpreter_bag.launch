@@ -60,8 +60,8 @@
   
   
 
-  <node pkg="unicorn_sensor_interpreter"
-        type="unicorn_laserscan_interpreter_node"
+  <node pkg="find_moving_objects"
+        type="laserscan_interpreter_node"
         name="$(arg interpreter_name)"
         args="--print_all_options
               --subscribe_topic /scan_echoed
@@ -71,6 +71,7 @@
               --publish_objects_velocity_arrows
               --velocity_arrows_use_sensor_frame
               --publish_objects_delta_position_lines
+              --publish_objects_width_lines
               --nr_scans_in_bank 7
               --object_threshold_min_speed 0.1
               --object_threshold_max_distance 8

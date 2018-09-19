@@ -32,7 +32,7 @@
            <arg name="enable_sync" value="true"/>
   </include>
   
-    <!--  VOXEL FILTER  -->
+  <!--  VOXEL FILTER  -->
   <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
   <node pkg="nodelet" type="nodelet" name="voxel_grid" args="load pcl/VoxelGrid pcl_manager" output="screen">
 <!--     <remap from="~input" to="/camera/depth/points" /> -->
@@ -49,8 +49,8 @@
     </rosparam>
   </node>
   
-  <node pkg="unicorn_sensor_interpreter"
-        type="unicorn_pointcloud2_interpreter_node"
+  <node pkg="find_moving_objects"
+        type="pointcloud2_interpreter_node"
         name="pointcloud2_interpreter"
         args="--print_all_options
               --subscribe_topic /camera/depth/color/points/filtered
@@ -64,8 +64,8 @@
               --publish_objects_closest_point_markers
               --publish_objects_velocity_arrows
               --publish_objects_delta_position_lines
+              --publish_objects_width_lines
               --velocity_arrows_use_sensor_frame
-              --delta_position_lines_use_sensor_frame
               --nr_scans_in_bank 11
               --nr_points_per_scan_in_bank 360
               --voxel_leaf_size 0.01
